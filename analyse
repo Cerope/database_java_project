@@ -1,0 +1,160 @@
+ANALYSE "FESTIVAL DU CIRQUE"
+
+
+________________________________________________________________________________
+Ensemble de données:
+
+{
+
+(code_numero_candidat [Pk],
+titre_numero,
+theme_numero,
+resume,
+duree_numero,
+nombre_artistes,
+artiste_principal,
+spectacle_attribue);
+
+(id_artiste [Pk],
+nom
+prenom,
+date_naissance,
+pseudonyme,
+cirque_origine,
+specialites,
+numero_telephone,
+liste_participation,
+liste_numeros_evalues,
+liste_evaluations,
+liste_notes);
+
+(id_spectacle [Pk],
+jour_spectacle,
+heure_debut,
+presentateur,
+liste_numeros_spectacle,
+prix_spectacle);
+
+}
+
+
+________________________________________________________________________________
+Dépendances fonctionnelles:
+
+{
+
+Code_numero_candidat --> titre_numero, theme_numero, resume, duree_numero, nombre_artistes, artiste_principal;
+
+id_artiste --> nom, prenom, date_naissance, cirque_origine, pseudonymes, numero_telephone,liste_participation, specialités;
+
+id_spectacle --> jour_spectacle, heure_debut, presentateur, liste_numeros_spectacle, prix_spectacle;
+
+jour_spectacle, heure_debut --> id_spectacle; (?)
+
+id_artiste, code_numero_candidat --> liste_numeros_evalues, liste_evaluations, liste_notes
+
+}
+
+________________________________________________________________________________
+Contraintes de valeur:
+
+10min <= duree_numero <= 30min;
+
+nombre_artistes >= 1;
+
+prix_spectacle >= 0;
+
+liste_notes C [0,10]*
+
+________________________________________________________________________________
+Contraintes de multiplicité:
+
+" un artiste participe a 1 ou plusieurs numéros"
+liste_participation != NULL & {}
+
+" un ou plusieurs numéros dans un spectacle"
+liste_numeros_spectacle != NULL & {}
+
+" Un artiste a au moins une spécialité "
+specialités -->> theme_spectacle, theme_numero;
+
+" un artiste a 1 ou plusieurs pseudonymes"
+id_artiste -->> pseudonyme
+
+"un artiste peut avoir des numéros évalués, des évaluations, des notes"
+id_artiste -|->> liste_numeros_evalues, liste_evaluations, liste_notes
+
+"un numero_candidat peut avoir au plus un spectacle"
+code_numero_candidat -|-> spectacle_attribue
+
+________________________________________________________________________________
+Contraintes contextuelles:
+
+- sum(liste_numeros_spectacle.duree_numero) <= 180min;
+
+- liste_numeros_evalues.artiste_principal.cirque_origine != cirque_origine;
+
+- artiste_principal.liste_numeros_evalues == NULL; (contraposée de expert ne peut pas proposer de numéro)
+
+- presentateur.liste_participation ^ liste_numeros_spectacle == [];
+- heure_debut in {9h, 14h};
+
+- len(liste_numeros_evalues) == len(liste_evaluations) == len(liste_notes)
+
+- "theme_numero, specialites in (magie, acrobatie, dressage d'animaux, ...);"
+theme_numero C Ext(specialités);
+specialités C Ext(specialités)
+
+- presentateur in id_artiste;
+
+- jour_spectacle in (ensemble_jours);
+
+- 5 experts par numéro
+Count(code_numero_candidat in artiste.numero_evalue) == 5
+
+- 3 specialistes et 2 non spécialistes dans les experts
+
+- Il ne peut pas y avoir plus de 15 évaluations par expert
+
+- Tous les numéros d'un spectacle ont le même thème.
+
+- Il ne peut pas y avoir deux mois le même numéro candidat dans liste_numeros_evalues
+
+________________________________________________________________________________
+Remarques:
+
+- Pour savoir si un artiste est expert ou non, il suffit de regarder la valeur de l'attribut "liste_numeros_evalues":
+  1/ "[id_numero_5, id_numero_4]" indique que l'artiste est un expert qui évalue les numéros 4 et 5.
+  2/ "[]"  indique que l'artiste est un expert mais qu'il n'évalue aucun numéro
+  3/ "NULL" indique que l'artiste n'est pas un expert
+
+- La seule personne pouvant porposer un numéro est l'artiste principal du numéro.
+Csq de la contrainte: un expert ne peut pas proposer de numéro. (Sinon impossibilité de le vérifier)
+
+- Evaluation est de type faible, c'est un cas 3 des sous types d'entités
+
+________________________________________________________________________________
+Problèmes à résoudre:
+
+1/ [artiste] : - id_artiste
+               - liste_numeros_evalues
+
+   [numero] : - cinq_experts
+              - cinq_evaluations
+              - cinq_notes
+
+Quelles sont les notes attibuées par un expert donné ?
+
+Nécessité de regarder tous les numéros !
+
+On a résolu le problème en ajoutant dans artiste l'attribut "liste_numeros_evalues" (permet en plus de savoir si c'est un expert).
+Mais cela provoque de la redondance.
+
+2/ [artiste] : - id_artiste
+               - liste_evaluations_numero
+               - liste_notes_numero
+
+Quelles sont les notes attribuées a un numéro donné ?
+
+Nécessité de regarder toutes les évaluations de tous les artistes
++ changement : pour savoir si un artiste est expert, regarder "liste_evaluations_numero" ou "liste_notes_numero"

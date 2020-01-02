@@ -1,0 +1,83 @@
+Ordre de Présentation des fonctionnalités :
+
+_______________________
+1/ Création des tables 
+
+_________________________
+2/ Création d'un artiste:
+
+on montre que la création remplit les tables:
+Artiste 
+A_aPour_p
+A_aPour_t
+Pseudo
+Theme
+
+on montre que cela respecte les contraintes suivantes :
+- 1 ou plusieurs pseudonymes
+- 1 ou plusieurs thèmes
+
+____________________________________________________
+3/ Création de 100 artistes avec le script de Meven:
+
+Ces artistes appartiennent à 3 thèmes :
+Acrobatie
+Clown
+Dressage
+Ils ont entre 1 et 2 thèmes chacun.
+Possibilité que deux artistes différents aient le même pseudo
+
+__________________________________________________________
+4/ Création d'un numeroCandidat:
+
+on montre que cela remplit les tables :
+NumeroCandidat
+A_participeA_nc
+
+on montre que cela respecte les contraintes suivantes :
+10 <= dureeNumero <= 30
+nombreArtiste >= 1
+tous les artistes du numéro appartiennent au même cirque
+tous les artistes d’un numéro ont la spécialité du numéro
+
+__________________________
+5/ Evaluation du numero :
+
+on montre que cela remplit la table :
+evaluer
+
+note ∈ [0,10]
+on montre que cela respecte les contraintes suivantes :
+un expert ne peut pas être du même cirque d’origine que les artistes des numéros qu’il évalue
+5 experts par numéro
+3 spécialistes et 2 non spécialistes parmi les 5 experts
+un artiste peut avoir des évaluations, des notes
+
+___________________________________________________________________________
+6/ Création de plusieurs numéros candidat d'un autre thème et rentrer les notes
+
+on montre que cela respecte les contraintes suivantes :
+un artiste participe a un ou plusieurs numéros
+
+_____________________________________________________
+7/ Planification du spectacle précédent sa création
+trier par thème 
+puis trier par note dans les thèmes
+affiche un warning si un numéro n'a pas assez d'évaluations 
+
+______________________________
+8/ Création d'un spectacle :
+
+on montre que cela remplit les tables :
+NC_presenteDans_s
+Spectacle
+
+on montre que cela respecte les contraintes suivantes :
+un ou plusieurs numéro(s) dans un spectacle
+tous les numéros d'un spectacle ont le même thème
+un numeroCandidat peut avoir au plus un spectacle
+prixSpectacle  ≥ 0
+heureDebut ∈ {9,14}
+Le présentateur d’un spectacle ne peut pas également être un artiste dans un numéro de ce spectacle
+
+

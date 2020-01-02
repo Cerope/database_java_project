@@ -1,0 +1,79 @@
+// Table ARTISTE
+
+"CREATE TABLE ARTISTE"
+        + "(idArtiste INTEGER PRIMARY KEY NOT NULL, "
+        + "nom VARCHAR(100), "
+        + "prenom VARCHAR(100), "
+        + "dateNaissance DATE, "
+        + "cirqueOrigine VARCHAR(100), "
+        + "numeroTel VARCHAR(10))"
+
+// Table THEME
+"CREATE TABLE THEME"
+        + "(theme VARCHAR(100) PRIMARY KEY NOT NULL)"
+
+// Table PSEUDOS
+"CREATE TABLE PSEUDOS"
+        + "(pseudo VARCHAR(100) PRIMARY KEY NOT NULL)"
+
+// Table NumeroCandidat
+
+"CREATE TABLE NUMEROCANDIDAT"
+        + "(codeNumeroCandidat INTEGER PRIMARY KEY NOT NULL, "
+        + "titreNumero VARCHAR(100), "
+        + "resume VARCHAR(500), "
+        + "dureeNumero INTEGER, "
+        + "nombreArtistes INTEGER CHECK (nombreArtistes > 0), "
+        + "artistePrincipal INTEGER, "
+        + "theme VARCHAR(100) NOT NULL REFERENCES THEME, "
+        + "CONSTRAINT check_duree CHECK (dureeNumero>=10 AND dureeNumero<=30))"
+
+// Table Spectacle
+
+"CREATE TABLE SPECTACLE"
+        + "(idSpectacle INTEGER PRIMARY KEY NOT NULL, "
+        + "jourSpectacle DATE, "
+        + "heureDebut INTEGER, "
+        + "prixSpectacle INTEGER, "
+        + "CONSTRAINT check_prix CHECK (prixSpectacle>=0), "
+        + "CONSTRAINT check_time CHECK (heureDebut=9 OR heureDebut=14))"
+
+// Table A_presente_s
+
+"CREATE TABLE A_PRESENTE_S"
+        + "(idArtiste INTEGER NOT NULL REFERENCES ARTISTE, "
+        + "idSpectacle INTEGER PRIMARY KEY NOT NULL REFERENCES SPECTACLE)"
+
+// Table A_participeA_NC
+
+"CREATE TABLE A_PARTICIPEA_NC"
+        + "(idArtiste INTEGER NOT NULL REFERENCES ARTISTE, "
+        + "codeNumeroCandidat INTEGER NOT NULL REFERENCES NUMEROCANDIDAT, "
+        + "PRIMARY KEY (idArtiste, codeNumeroCandidat))"
+
+// Table NC_PresenteDans_s
+
+"CREATE TABLE NC_PRESENTEDANS_S"
+        + "(codeNumeroCandidat INTEGER PRIMARY KEY NOT NULL REFERENCES NUMEROCANDIDAT, "
+        + "idSpectacle INTEGER NOT NULL REFERENCES SPECTACLE)"
+
+// Table A_àPour_p
+
+"CREATE TABLE A_APOUR_P"
+        + "(idArtiste INTEGER PRIMARY KEY NOT NULL REFERENCES ARTISTE, "
+        + "pseudo VARCHAR(100) NOT NULL REFERENCES PSEUDOS), "
+        + "PRIMARY KEY (idArtiste, pseudo))"
+// Table A_àPour_t
+
+"CREATE TABLE A_APOUR_T"
+        + "(idArtiste INTEGER NOT NULL REFERENCES ARTISTE, "
+        + "theme VARCHAR(100) NOT NULL REFERENCES THEME), "
+        + "PRIMARY KEY (idArtiste, theme))"
+// Table Evaluer
+
+"CREATE TABLE EVALUER"
+        + "(idArtiste INTEGER NOT NULL REFERENCES ARTISTE, "
+        + "codeNumeroCandidat INTEGER NOT NULL REFERENCES NUMEROCANDIDAT, "
+        + "evaluation VARCHAR(255), "
+        + "note INTEGER CHECK (note>=0 AND note < 11), "
+        + "PRIMARY KEY (idArtiste, codeNumeroCandidat))"
