@@ -6,3 +6,6 @@ make userInterface : genere l'interface homme machine. C'est ce que doit lancer 
 make dropTable : Supprime les tables.
 
 make generationAleatoire :  Ajoute 100 artistes aléatoires dans les tables.
+
+
+Full commit history available upon request.
